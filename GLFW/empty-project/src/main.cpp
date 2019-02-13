@@ -72,10 +72,14 @@ int main()
 	// configure global opengl state
 	// -----------------------------
 	glEnable(GL_DEPTH_TEST);
-
+	glDepthFunc(GL_LESS);
+	glEnable(GL_STENCIL_TEST);
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 	// build and compile shaders
 	// -------------------------
-	Shader ourShader(g_shader_vert_outline, g_shader_frag_outline);
+	Shader outlineShader(g_shader_vert_outline, g_shader_frag_outline);
+	Shader ourShader(g_shader_vertex_mvp, g_shader_frag_diffuse);
 
 	// load models
 	// -----------
@@ -101,11 +105,13 @@ int main()
 		// render
 		// ------
 		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+		//1st  Render Pass: draw the 3D Model to stencil buffer
 		// don't forget to enable shader before setting uniforms
 		ourShader.use();
-
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		glStencilMask(0xFF);
 		// view/projection transformations
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 		glm::mat4 view = camera.GetViewMatrix();
@@ -119,7 +125,16 @@ int main()
 		ourShader.setMat4("model", model);
 		ourModel.Draw(ourShader);
 
-
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		glStencilMask(0x00);
+		glDisable(GL_DEPTH_TEST);
+		outlineShader.use();
+		outlineShader.setMat4("proj", projection);
+		outlineShader.setMat4("view", view);
+		outlineShader.setMat4("model", model);
+		ourModel.Draw(outlineShader);
+		glStencilMask(0xFF);
+		glEnable(GL_DEPTH_TEST);
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
 		glfwSwapBuffers(window);

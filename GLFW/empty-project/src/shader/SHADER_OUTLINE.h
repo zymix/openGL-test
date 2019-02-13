@@ -10,7 +10,7 @@ const char * g_shader_vert_outline = "#version 330 core \
 \nvoid main() \
 \n{ \
 \n		texCoord = aTexCoord; \
-\n		gl_Position = proj * view * model * vec4(aPos + normalize(aNormal)*0.1, 1.0); \
+\n		gl_Position = proj * view * model * vec4(aPos + normalize(aNormal)*0.05, 1.0); \
 \n}";
 
 const char * g_shader_frag_outline = "#version 330 core \
