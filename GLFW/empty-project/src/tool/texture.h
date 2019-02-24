@@ -4,9 +4,9 @@
 class Texture
 {
 public:
+	Texture() : _textureID(-1) {}
 	unsigned int loadTexture(char const * path);
 	unsigned int loadCubeMap(std::vector<std::string>& face);
-private:
-	unsigned int textureID;
+	unsigned int _textureID;
 };
 #endif // _TEXTURE_H_

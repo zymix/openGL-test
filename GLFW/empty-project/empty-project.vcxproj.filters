@@ -30,6 +30,12 @@
     <ClCompile Include="src\mesh\Model.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\tool\texture.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\skybox\Skybox.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glm\common.hpp">
@@ -297,6 +303,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="src\shader\SHADER_OUTLINE.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tool\texture.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\skybox\skybox.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shader\SHADER_SKYBOX.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

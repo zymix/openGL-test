@@ -23,6 +23,8 @@
     <ClCompile Include="src\mesh\Model.cpp" />
     <ClCompile Include="src\mesh\Mesh.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\skybox\Skybox.cpp" />
+    <ClCompile Include="src\tool\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="glm\CMakeLists.txt" />
@@ -114,9 +116,12 @@
     <ClInclude Include="src\shader\Shader.h" />
     <ClInclude Include="src\shader\Shader.hpp" />
     <ClInclude Include="src\shader\SHADER_OUTLINE.h" />
+    <ClInclude Include="src\shader\SHADER_SKYBOX.h" />
     <ClInclude Include="src\shader\SHADER_VERTEX_MVP.h" />
     <ClInclude Include="src\shader\SHADER_FRAGMENT_TEXTURE.h" />
+    <ClInclude Include="src\skybox\Skybox.h" />
     <ClInclude Include="src\tool\stb_image.h" />
+    <ClInclude Include="src\tool\Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="glm\gtc\bitfield.inl" />

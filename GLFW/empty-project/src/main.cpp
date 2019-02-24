@@ -9,7 +9,7 @@
 #include <shader/Camera.h>
 #include <shader/Shader.hpp>
 #include <mesh/model.h>
-
+#include <skybox/Skybox.h>
 #include <iostream>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -18,8 +18,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1280;
+const unsigned int SCR_HEIGHT = 1080;
 
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -76,18 +76,32 @@ int main()
 	glEnable(GL_STENCIL_TEST);
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
 	// build and compile shaders
 	// -------------------------
 	Shader outlineShader(g_shader_vert_outline, g_shader_frag_outline);
 	Shader ourShader(g_shader_vertex_mvp, g_shader_frag_diffuse);
+	Shader skyboxShader(g_shader_vert_skybox, g_shader_frag_skybox);
 
 	// load models
 	// -----------
 	Model ourModel("./res/nanosuit/nanosuit.obj");
-
+	vector<std::string>faces
+	{
+		"./res/texture/skybox/sor_lake1/lake1_ft.JPG",
+		"./res/texture/skybox/sor_lake1/lake1_bk.JPG",
+		"./res/texture/skybox/sor_lake1/lake1_up.JPG",
+		"./res/texture/skybox/sor_lake1/lake1_dn.JPG",
+		"./res/texture/skybox/sor_lake1/lake1_rt.JPG",
+		"./res/texture/skybox/sor_lake1/lake1_lf.JPG",
+	};
+	Skybox skybox;
+	skybox.setTextureFaces(faces);
 	// draw in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
+	glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 1.0f, 5000.0f);
 	// render loop
 	// -----------
 	while (!glfwWindowShouldClose(window))
@@ -106,35 +120,40 @@ int main()
 		// ------
 		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		glm::mat4 view = camera.GetViewMatrix();
 
 		//1st  Render Pass: draw the 3D Model to stencil buffer
 		// don't forget to enable shader before setting uniforms
 		ourShader.use();
 		glStencilFunc(GL_ALWAYS, 1, 0xFF);
 		glStencilMask(0xFF);
-		// view/projection transformations
-		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-		glm::mat4 view = camera.GetViewMatrix();
+
 		ourShader.setMat4("proj", projection);
 		ourShader.setMat4("view", view);
-
 		// render the loaded model
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene
+		model = glm::translate(model, glm::vec3(0.0f, -1.75f, -10.0f)); // translate it down so it's at the center of the scene
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));	// it's a bit too big for our scene, so scale it down
 		ourShader.setMat4("model", model);
 		ourModel.Draw(ourShader);
 
 		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 		glStencilMask(0x00);
-		glDisable(GL_DEPTH_TEST);
 		outlineShader.use();
 		outlineShader.setMat4("proj", projection);
 		outlineShader.setMat4("view", view);
 		outlineShader.setMat4("model", model);
 		ourModel.Draw(outlineShader);
 		glStencilMask(0xFF);
-		glEnable(GL_DEPTH_TEST);
+		
+
+		//天空盒
+		skyboxShader.use();
+		glm::mat4 skyView = glm::mat4(glm::mat3(view)); //去除平移矩阵的影响
+		skyboxShader.setMat4("view", skyView);
+		skyboxShader.setMat4("proj", projection);
+		skybox.draw(skyboxShader);
+
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
 		glfwSwapBuffers(window);

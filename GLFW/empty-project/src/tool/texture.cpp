@@ -1,4 +1,4 @@
-#include "texture.h"
+#include "Texture.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "stb_image.h"
@@ -36,6 +36,8 @@ unsigned int Texture::loadTexture(char const * path)
 		std::cout << "Texture failed to load at path: " << path << std::endl;
 		stbi_image_free(data);
 	}
+
+	_textureID = tid;
 	return tid;
 }
 
@@ -55,7 +57,7 @@ unsigned int Texture::loadCubeMap(std::vector<std::string>& face)
 		}
 		else
 		{
-			std::cout << "Texture failed to load at path: " << path << std::endl;
+			std::cout << "Texture failed to load at path: " << face[i].c_str() << std::endl;
 			stbi_image_free(data);
 		}
 	}
@@ -64,5 +66,7 @@ unsigned int Texture::loadCubeMap(std::vector<std::string>& face)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	
+	_textureID = tid;
 	return tid;
 }
