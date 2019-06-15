@@ -19,7 +19,7 @@ void processInput(GLFWwindow *window);
 
 // settings
 const unsigned int SCR_WIDTH = 1280;
-const unsigned int SCR_HEIGHT = 1080;
+const unsigned int SCR_HEIGHT = 768;
 
 // camera
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -72,17 +72,17 @@ int main()
 	// configure global opengl state
 	// -----------------------------
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
-	glEnable(GL_STENCIL_TEST);
-	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	glFrontFace(GL_CCW);
+	//glDepthFunc(GL_LESS);
+	//glEnable(GL_STENCIL_TEST);
+	//glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	//glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
+	//glFrontFace(GL_CCW);
 	// build and compile shaders
 	// -------------------------
 	Shader outlineShader(g_shader_vert_outline, g_shader_frag_outline);
-	Shader ourShader(g_shader_vertex_mvp, g_shader_frag_diffuse);
+	Shader ourShader(g_shader_vertex_normal, g_shader_frag_normal);
 	Shader skyboxShader(g_shader_vert_skybox, g_shader_frag_skybox);
 
 	// load models
@@ -101,7 +101,7 @@ int main()
 	skybox.setTextureFaces(faces);
 	// draw in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 1.0f, 5000.0f);
+	glm::vec3 lightPos(0, 1, 1);
 	// render loop
 	// -----------
 	while (!glfwWindowShouldClose(window))
@@ -118,18 +118,20 @@ int main()
 
 		// render
 		// ------
-		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 		glm::mat4 view = camera.GetViewMatrix();
-
+		glm::mat4 projection = camera.GetProjMatrix(SCR_WIDTH, SCR_HEIGHT);
 		//1st  Render Pass: draw the 3D Model to stencil buffer
 		// don't forget to enable shader before setting uniforms
 		ourShader.use();
-		glStencilFunc(GL_ALWAYS, 1, 0xFF);
-		glStencilMask(0xFF);
+		//glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		//glStencilMask(0xFF);
 
 		ourShader.setMat4("proj", projection);
 		ourShader.setMat4("view", view);
+		ourShader.setVec3("lightPos", lightPos);
+		ourShader.setVec3("view", camera.Position);
 		// render the loaded model
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, -1.75f, -10.0f)); // translate it down so it's at the center of the scene
@@ -137,14 +139,14 @@ int main()
 		ourShader.setMat4("model", model);
 		ourModel.Draw(ourShader);
 
-		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-		glStencilMask(0x00);
-		outlineShader.use();
-		outlineShader.setMat4("proj", projection);
-		outlineShader.setMat4("view", view);
-		outlineShader.setMat4("model", model);
-		ourModel.Draw(outlineShader);
-		glStencilMask(0xFF);
+		//glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		//glStencilMask(0x00);
+		//outlineShader.use();
+		//outlineShader.setMat4("proj", projection);
+		//outlineShader.setMat4("view", view);
+		//outlineShader.setMat4("model", model);
+		//ourModel.Draw(outlineShader);
+		//glStencilMask(0xFF);
 		
 
 		//Ìì¿ÕºÐ

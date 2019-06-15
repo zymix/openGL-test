@@ -314,6 +314,9 @@
     <ClInclude Include="src\shader\SHADER_SKYBOX.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\shader\SHADER_FRAGMENT_NORMAL.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="glm\gtc\bitfield.inl">
