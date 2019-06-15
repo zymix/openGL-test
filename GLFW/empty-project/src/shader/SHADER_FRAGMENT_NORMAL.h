@@ -13,12 +13,15 @@ uniform sampler2D texture_specular1;\n \
 \n \
 void main(){\n \
     vec3 n = normalize(texture(texture_normal1, texCoord).xyz * 2.0 -1.0);\n \
+    vec3 v = normalize(tanViewPos - tanPos);\n \
+    vec3 l = normalize(tanLightPos - tanPos);\n \
     vec3 h = normalize(v+l);\n \
 \n \
     vec3 color = texture(texture_diffuse1, texCoord).rgb;\n \
-    vec3 diffuse = color * max(dot(n, l), 0);\n \
-    vec3 ambient = color * 0.1;\n \
+    vec3 diffuse = color * max(dot(l, n), 0);\n \
+    vec3 ambient = color * 0.3;\n \
 \n \
 	vec3 specColor = texture(texture_specular1, texCoord).rgb; \n \
+    vec3 specular = specColor * pow(max(dot(n, h), 0), 32.0);\n \
     FragColor = vec4(ambient+diffuse+specular, 1.0);\n \
 }";
