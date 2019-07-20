@@ -51,3 +51,4 @@ GLFW/empty-project/.vs/
 GLFW/empty-project/Debug/
 GLFW/empty-project.VC.db
 GLFW/empty-project.VC.VC.opendb
+GLFW/empty-project/src/tool/configuration/root_directory.h
