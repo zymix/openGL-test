@@ -67,6 +67,11 @@ public:
 	{
 		return glm::lookAt(Position, Position + Front, Up);
 	}
+	// Returns the view matrix calculated using Euler Angles and the LookAt Matrix
+	glm::mat4 GetProjMatrix(float width, float height)
+	{
+		return glm::perspective(glm::radians(Zoom), width / height, 0.1f, 100.0f);
+	}
 
 	glm::mat4 GetProjectionMatrix(float width, float height)
 	{

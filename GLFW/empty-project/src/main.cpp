@@ -23,6 +23,7 @@ unsigned int loadTexture(const char* path);
 const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 720;
 
+
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = (float)SCR_WIDTH/2.0;
 float lastY = (float)SCR_HEIGHT/2.0;
